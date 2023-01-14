@@ -187,8 +187,8 @@ class Accordion extends Widget
                 Html::addCssClass($options, ['visibility' => 'show']);
             }
 
-            if (!isset($options['aria']['label'], $options['aria']['labelledby'])) {
-                $options['aria']['labelledby'] = $options['id'] . '-heading';
+            if (!isset($options['aria-label'], $options['aria-labelledby'])) {
+                $options['aria-labelledby'] = $options['id'] . '-heading';
             }
 
             $encodeLabel = $item['encode'] ?? $this->encodeLabels;
@@ -214,11 +214,7 @@ class Accordion extends Widget
                 ArrayHelper::remove($itemToggleOptions, 'data.bs-target');
                 $headerToggle = Html::a($header, '#' . $id, $itemToggleOptions) . "\n";
             } else {
-                if (!$expand) {
-                    Html::addCssClass($itemToggleOptions, ['widget' => 'accordion-button collapsed']);
-                } else {
-                    Html::addCssClass($itemToggleOptions, ['widget' => 'accordion-button']);
-                }
+                Html::addCssClass($itemToggleOptions, ['widget' => 'accordion-button']);
                 $headerToggle = Button::widget([
                         'label' => $header,
                         'encodeLabel' => false,

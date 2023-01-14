@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace yii\bootstrap5;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
@@ -283,25 +282,25 @@ class Modal extends Widget
         $this->titleOptions = array_merge([
             'id' => $this->options['id'] . '-label',
         ], $this->titleOptions);
-        if (!isset($this->options['aria']['label'], $this->options['aria']['labelledby']) && isset($this->title)) {
-            $this->options['aria']['labelledby'] = $this->titleOptions['id'];
+        if (!isset($this->options['aria-label'], $this->options['aria-labelledby']) && isset($this->title)) {
+            $this->options['aria-labelledby'] = $this->titleOptions['id'];
         }
 
         if ($this->closeButton !== false) {
             $this->closeButton = array_merge([
                 'class' => ['widget' => 'btn-close'],
                 'data' => ['bs-dismiss' => 'modal'],
-                'aria' => ['label' => Yii::t('yii/bootstrap5', 'Close')]
+                'aria' => ['label' => 'Close']
             ], $this->closeButton);
         }
 
         if ($this->toggleButton !== false) {
             $this->toggleButton = array_merge([
-                'data' => ['bs-toggle' => 'modal'],
+                'data-bs-toggle' => 'modal',
                 'type' => 'button',
             ], $this->toggleButton);
-            if (!isset($this->toggleButton['data']['bs-target']) && !isset($this->toggleButton['href'])) {
-                $this->toggleButton['data']['bs-target'] = '#' . $this->options['id'];
+            if (!isset($this->toggleButton['data-bs-target']) && !isset($this->toggleButton['href'])) {
+                $this->toggleButton['data-bs-target'] = '#' . $this->options['id'];
             }
         }
 

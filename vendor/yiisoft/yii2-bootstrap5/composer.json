@@ -31,16 +31,7 @@
     },
     "require-dev": {
         "yiisoft/yii2-coding-standards": "~2.0",
-        "phpunit/phpunit": "^6.5.14",
-        "twbs/bootstrap-icons": "^1.7.2"
-    },
-    "suggest": {
-        "twbs/bootstrap-icons": "Add this package to the `require` section of your `composer.json` if you'd like to use the bootstrap icon asset."
-    },
-    "config": {
-        "allow-plugins": {
-            "yiisoft/yii2-composer": true
-        }
+        "phpunit/phpunit": "^6.5.14"
     },
     "repositories": [
         {
@@ -60,8 +51,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
-        },
-        "bootstrap": "yii\\bootstrap5\\i18n\\TranslationBootstrap"
+            "dev-master": "1.0.x-dev"
+        }
     }
 }

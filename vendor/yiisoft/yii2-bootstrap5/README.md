@@ -33,15 +33,10 @@ php composer.phar require --prefer-dist yiisoft/yii2-bootstrap5
 or add
 
 ```
-"yiisoft/yii2-bootstrap5": "*"
+"yiisoft/yii2-bootstrap5": "~1.0@dev"
 ```
 
 to the require section of your `composer.json` file.
-
-Translations
-----
-
-The i18n configuration will be automatically added to your application configuration via bootstrapping process.
 
 Usage
 ----

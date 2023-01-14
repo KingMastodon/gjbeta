@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -15,7 +15,6 @@ use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
-use yii\test\Fixture;
 use yii\test\FixtureTrait;
 
 /**
@@ -158,7 +157,7 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($fixturesObjects);
         $this->loadFixtures($fixturesObjects);
-        $this->notifyLoaded($fixturesObjects);
+        $this->notifyLoaded($fixtures);
 
         return ExitCode::OK;
     }
@@ -248,20 +247,13 @@ class FixtureController extends Controller
 
     /**
      * Notifies user that fixtures were successfully loaded.
-     * @param Fixture[] $fixtures array of loaded fixtures
+     * @param array $fixtures
      */
     private function notifyLoaded($fixtures)
     {
         $this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
         $this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
-
-        $fixtureClassNames = [];
-
-        foreach ($fixtures as $fixture) {
-            $fixtureClassNames[] = $fixture::className();
-        }
-
-        $this->outputList($fixtureClassNames);
+        $this->outputList($fixtures);
     }
 
     /**

@@ -28,6 +28,7 @@ class ActiveFieldTest extends TestCase
 
     public function testFileInput()
     {
+        Html::$counter = 0;
         $html = $this->activeField->fileInput()->render();
 
         $expectedHtml = <<<HTML
@@ -42,40 +43,9 @@ HTML;
         $this->assertEqualsWithoutLE($expectedHtml, $html);
     }
 
-    public function testRangeInput()
-    {
-        $html = $this->activeField->rangeInput()->render();
-
-        $expectedHtml = <<<HTML
-<div class="mb-3 field-dynamicmodel-attributename">
-<label class="form-label" for="dynamicmodel-attributename">Attribute Name</label>
-<input type="range" id="dynamicmodel-attributename" class="form-range" name="DynamicModel[attributeName]">
-
-<div class="invalid-feedback"></div>
-</div>
-HTML;
-
-        $this->assertEqualsWithoutLE($expectedHtml, $html);
-    }
-
-    public function testColorInput()
-    {
-        $html = $this->activeField->colorInput()->render();
-
-        $expectedHtml = <<<HTML
-<div class="mb-3 field-dynamicmodel-attributename">
-<label class="form-label" for="dynamicmodel-attributename">Attribute Name</label>
-<input type="color" id="dynamicmodel-attributename" class="form-control form-control-color" name="DynamicModel[attributeName]">
-
-<div class="invalid-feedback"></div>
-</div>
-HTML;
-
-        $this->assertEqualsWithoutLE($expectedHtml, $html);
-    }
-
     public function testRadioList()
     {
+        Html::$counter = 0;
         $html = $this->activeField->radioList([1 => 'name1', 2 => 'name2'])->render();
 
         $expectedHtml = <<<HTML
@@ -102,6 +72,7 @@ HTML;
 
     public function testRadioError()
     {
+        Html::$counter = 0;
         $this->helperModel->addError($this->attributeName, 'Test print error message');
         $html = $this->activeField->radio()->render();
 
@@ -120,6 +91,7 @@ HTML;
 
     public function testRadioListError()
     {
+        Html::$counter = 0;
         $this->helperModel->addError($this->attributeName, 'Test print error message');
         $html = $this->activeField->radioList([1 => 'name1', 2 => 'name2'])->render();
 
@@ -145,6 +117,7 @@ HTML;
 
     public function testCheckboxList()
     {
+        Html::$counter = 0;
         $html = $this->activeField->checkboxList([1 => 'name1', 2 => 'name2'])->render();
 
         $expectedHtml = <<<HTML
@@ -167,28 +140,9 @@ HTML;
         $this->assertEqualsWithoutLE($expectedHtml, $html);
     }
 
-    /**
-     * @test checkbox
-     */
-    public function testCheckboxSwitch()
-    {
-        $html = $this->activeField->checkbox(['switch' => true])->render();
-
-        $expectedHtml = <<<HTML
-<div class="mb-3 field-dynamicmodel-attributename">
-<div class="form-check form-switch">
-<input type="hidden" name="DynamicModel[attributeName]" value="0"><input type="checkbox" id="dynamicmodel-attributename" class="form-check-input" name="DynamicModel[attributeName]" value="1" role="switch">
-<label class="form-check-label" for="dynamicmodel-attributename">Attribute Name</label>
-<div class="invalid-feedback"></div>
-
-</div>
-</div>
-HTML;
-        $this->assertEqualsWithoutLE($expectedHtml, $html);
-    }
-
     public function testCheckboxError()
     {
+        Html::$counter = 0;
         $this->helperModel->addError($this->attributeName, 'Test print error message');
         $html = $this->activeField->checkbox()->render();
 
@@ -207,6 +161,7 @@ HTML;
 
     public function testCheckboxListError()
     {
+        Html::$counter = 0;
         $this->helperModel->addError($this->attributeName, 'Test print error message');
         $html = $this->activeField->checkboxList([1 => 'name1', 2 => 'name2'])->render();
 
@@ -232,6 +187,7 @@ HTML;
 
     public function testRadioListInline()
     {
+        Html::$counter = 0;
         $this->activeField->inline = true;
         $html = $this->activeField->radioList([1 => 'name1', 2 => 'name2'])->render();
 
@@ -257,6 +213,7 @@ HTML;
 
     public function testCheckboxListInline()
     {
+        Html::$counter = 0;
         $this->activeField->inline = true;
         $html = $this->activeField->checkboxList([1 => 'name1', 2 => 'name2'])->render();
 
@@ -281,10 +238,12 @@ HTML;
     }
 
     /**
+     *
      * @see https://github.com/yiisoft/yii2-bootstrap/issues/81
      */
     public function testRadioListItemOptions()
     {
+        Html::$counter = 0;
         $content = $this->activeField->radioList([1 => 'name1', 2 => 'name2'], [
             'itemOptions' => [
                 'data-attribute' => 'test'
@@ -300,6 +259,7 @@ HTML;
      */
     public function testCheckboxListItemOptions()
     {
+        Html::$counter = 0;
         $content = $this->activeField->checkboxList([1 => 'name1', 2 => 'name2'], [
             'itemOptions' => [
                 'data-attribute' => 'test'
@@ -314,9 +274,8 @@ HTML;
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
         $_SERVER['SCRIPT_FILENAME'] = "index.php";
         $_SERVER['SCRIPT_NAME'] = "index.php";
-        parent::setUp();
 
-        Html::$counter = 0;
+        parent::setUp();
 
         $this->helperModel = new DynamicModel(['attributeName']);
         ob_start();

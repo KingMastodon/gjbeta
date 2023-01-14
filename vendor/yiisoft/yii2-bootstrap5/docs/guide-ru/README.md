@@ -25,4 +25,3 @@
 -------------
 
 * [Использование .sass файлов Bootstrap напрямую](topics-sass.md)
-* [Миграция с yii2-bootstrap4](migrating-yii2-bootstrap.md)

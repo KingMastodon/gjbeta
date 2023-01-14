@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace yii\bootstrap5;
 
 use Throwable;
-use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
@@ -55,9 +54,9 @@ class ButtonDropdown extends Widget
     const DIRECTION_UP = 'up';
 
     /**
-     * @var string|null the button label
+     * @var string the button label
      */
-    public $label = null;
+    public $label = 'Button';
     /**
      * @var array the HTML attributes for the container tag. The following special options are recognized:
      *
@@ -114,9 +113,6 @@ class ButtonDropdown extends Widget
         if (!isset($this->buttonOptions['id'])) {
             $this->buttonOptions['id'] = $this->options['id'] . '-button';
         }
-        if ($this->label === null) {
-            $this->label = Yii::t('yii/bootstrap5', 'Button');
-        }
     }
 
     /**
@@ -163,7 +159,7 @@ class ButtonDropdown extends Widget
             Html::addCssClass($this->buttonOptions, ['toggle' => 'dropdown-toggle dropdown-toggle-split']);
             unset($buttonOptions['id']);
             $splitButton = Button::widget([
-                'label' => '<span class="visually-hidden">' . Yii::t('yii/bootstrap5', 'Toggle Dropdown') . '</span>',
+                'label' => '<span class="visually-hidden">Toggle Dropdown</span>',
                 'encodeLabel' => false,
                 'options' => $this->buttonOptions,
                 'view' => $this->getView(),

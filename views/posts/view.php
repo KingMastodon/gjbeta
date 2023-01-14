@@ -59,7 +59,7 @@ $script = <<< JS
         getAjaxComments();      
     });
 
-
+    const root = '/gjbeta';
     function rebuildCommentsHtml(data){
         $('#comments_container').empty();
         var collapseBranchId = '';
@@ -229,7 +229,7 @@ $script = <<< JS
         const post_id = urlParams.get('id')
 
         $.ajax({
-            url: '/gjbeta/web/posts/get-new-json-data?postId='+post_id,
+            url: root + '/web/posts/get-new-json-data?postId='+post_id,
             type: 'GET',
             dataType: 'json',
                 success: function(response) {
@@ -256,7 +256,7 @@ $script = <<< JS
 
     function ajaxCreate(parent_id, content, post_id){
         $.ajax({
-            url: '/gjbeta/web/comments/create',
+            url: root + '/web/comments/create',
             type: 'POST',
             data: {
                 'parent_id': parent_id,
@@ -278,7 +278,7 @@ $script = <<< JS
     }
     function ajaxUpdate(comment_id, content, type='update'){
         $.ajax({
-            url: '/gjbeta/web/comments/update?id='+comment_id + '&type='+type,
+            url: root + '/web/comments/update?id='+comment_id + '&type='+type,
             type: 'POST',
             data: {
                 'id': comment_id,
@@ -299,7 +299,7 @@ $script = <<< JS
     }
     function ajaxDelete(comment_id, content, type){
         $.ajax({
-            url: '/gjbeta/web/comments/update?id='+comment_id + '&type='+type,
+            url: root + '/web/comments/update?id='+comment_id + '&type='+type,
             type: 'POST',
             data: {
                 'id': comment_id,

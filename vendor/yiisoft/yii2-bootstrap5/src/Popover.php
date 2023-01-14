@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace yii\bootstrap5;
 
-use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -155,7 +154,7 @@ class Popover extends Widget
     {
         if (($toggleButton = $this->toggleButton) !== false) {
             $tag = ArrayHelper::remove($toggleButton, 'tag', 'button');
-            $label = ArrayHelper::remove($toggleButton, 'label', Yii::t('yii/bootstrap5', 'Show'));
+            $label = ArrayHelper::remove($toggleButton, 'label', 'Show');
             $toggleButton['id'] = $this->options['id'];
 
             return Html::tag($tag, $label, $toggleButton);

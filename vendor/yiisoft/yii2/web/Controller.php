@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -17,9 +17,8 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
- * @property Request $request The request object.
- * @property Response $response The response object.
- * @property View $view The view object that can be used to render views or view files.
+ * @property Request $request
+ * @property Response $response
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -243,7 +242,7 @@ class Controller extends \yii\base\Controller
      *
      * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
      *
-     * - a string representing a URL (e.g. "https://example.com")
+     * - a string representing a URL (e.g. "http://example.com")
      * - a string representing a URL alias (e.g. "@example.com")
      * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`)
      *   [[Url::to()]] will be used to convert the array into a URL.
@@ -291,7 +290,7 @@ class Controller extends \yii\base\Controller
      *
      * For this function to work you have to [[User::setReturnUrl()|set the return URL]] in appropriate places before.
      *
-     * @param string|array|null $defaultUrl the default return URL in case it was not set previously.
+     * @param string|array $defaultUrl the default return URL in case it was not set previously.
      * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
      * Please refer to [[User::setReturnUrl()]] on accepted format of the URL.
      * @return Response the current response object

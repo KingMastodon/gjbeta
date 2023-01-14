@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\rbac;
@@ -62,7 +62,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var CacheInterface|array|string|null the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -654,9 +654,7 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
-        if (!$data) {
-            return null;
-        }
+
         return unserialize($data);
     }
 
@@ -677,9 +675,7 @@ class DbManager extends BaseManager
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            if ($data) {
-                $rules[$row['name']] = unserialize($data);
-            }
+            $rules[$row['name']] = unserialize($data);
         }
 
         return $rules;
@@ -1017,9 +1013,7 @@ class DbManager extends BaseManager
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            if ($data) {
-                $this->rules[$row['name']] = unserialize($data);
-            }
+            $this->rules[$row['name']] = unserialize($data);
         }
 
         $query = (new Query())->from($this->itemChildTable);

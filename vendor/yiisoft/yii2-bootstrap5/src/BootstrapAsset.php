@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 declare(strict_types=1);
@@ -11,20 +11,11 @@ namespace yii\bootstrap5;
 
 use yii\web\AssetBundle;
 
-/**
- * Twitter Bootstrap 5 CSS bundle.
- */
 class BootstrapAsset extends AssetBundle
 {
-    /**
-     * @inheritDoc
-     */
-    public $sourcePath = '@bower/bootstrap';
-
-    /**
-     * @inheritDoc
-     */
+    public $sourcePath = '@bower/bootstrap/dist';
     public $css = [
-        'dist/css/bootstrap.css'
+        'css/bootstrap.css',
     ];
+    public $js = [];
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -31,7 +31,7 @@ class BaseHtml
     public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
-     * @see https://html.spec.whatwg.org/multipage/syntax.html#void-element
+     * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
      */
     public static $voidElements = [
         'area' => 1,
@@ -572,7 +572,7 @@ class BaseHtml
 
     /**
      * Generates an input button.
-     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -592,7 +592,7 @@ class BaseHtml
      * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
      * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
      *
-     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -608,7 +608,7 @@ class BaseHtml
 
     /**
      * Generates a reset input button.
-     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -792,8 +792,7 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|bool|array|null $selection the selected value(s). String/boolean for single or array for multiple
-     * selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -850,8 +849,7 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|bool|array|null $selection the selected value(s). String for single or array for multiple
-     * selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1856,8 +1854,7 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array|bool|null $selection the selected value(s). String/boolean for single or array for multiple
-     * selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1875,17 +1872,7 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $normalizedSelection = [];
-            foreach (ArrayHelper::toArray($selection) as $selectionItem) {
-                if (is_bool($selectionItem)) {
-                    $normalizedSelection[] = $selectionItem ? '1' : '0';
-                } else {
-                    $normalizedSelection[] = (string)$selectionItem;
-                }
-            }
-            $selection = $normalizedSelection;
-        } elseif (is_bool($selection)) {
-            $selection = $selection ? '1' : '0';
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $lines = [];
@@ -1926,20 +1913,9 @@ class BaseHtml
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
-                    $selected = false;
-                    if ($selection !== null) {
-                        if (ArrayHelper::isTraversable($selection)) {
-                            $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
-                        } elseif ($key === '' || $selection === '') {
-                            $selected = $selection === $key;
-                        } elseif ($strict) {
-                            $selected = !strcmp((string)$key, (string)$selection);
-                        } else {
-                            $selected = $selection == $key;
-                        }
-                    }
-
-                    $attrs['selected'] = $selected;
+                    $attrs['selected'] = $selection !== null &&
+                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1956,7 +1932,7 @@ class BaseHtml
      * Renders the HTML tag attributes.
      *
      * Attributes whose values are of boolean type will be treated as
-     * [boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
+     * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
      *
      * Attributes whose values are null will not be rendered.
      *

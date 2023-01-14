@@ -28,9 +28,13 @@ abstract class BaseHtml extends \yii\helpers\Html
      */
     public static $autoIdPrefix = 'i';
     /**
-     * @inheritDoc
+     * @var array list of tag attributes that should be specially handled when their values are of array type.
+     * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes
+     * will be generated instead of one: `data-name="xyz" data-age="13"`.
+     * @since 2.0.3
      */
-    public static $normalizeClassAttribute = true;
+    public static $dataAttributes = ['data', 'data-ng', 'ng', 'aria'];
+
 
     /**
      * Renders Bootstrap static form control.
@@ -52,7 +56,6 @@ abstract class BaseHtml extends \yii\helpers\Html
 
     /**
      * Generates a Bootstrap static form control for the given model attribute.
-     *
      * @param Model $model the model object.
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -73,33 +76,24 @@ abstract class BaseHtml extends \yii\helpers\Html
     }
 
     /**
-     * {@inheritdoc}
-     * Pass `true` in `$options['inline']` to generate [inline list](https://getbootstrap.com/docs/5.1/forms/checks-radios/#inline).
+     * {@inheritDoc}
      */
     public static function radioList($name, $selection = null, $items = [], $options = []): string
     {
-        $inline = ArrayHelper::remove($options, 'inline', false);
-
         if (!isset($options['item'])) {
             $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
-            static::addCssClass($itemOptions, ['bootstrap' => 'form-check-input']);
-            if (!isset($itemOptions['labelOptions'])) {
-                $itemOptions['labelOptions'] = ['class' => 'form-check-label'];
-            } else {
-                static::addCssClass($itemOptions['labelOptions'], ['bootstrap' => 'form-check-label']);
-            }
-
-            $wrapperOptions = $inline ? ['class' => 'form-check form-check-inline'] : ['class' => 'form-check'];
-
             $encode = ArrayHelper::getValue($options, 'encode', true);
+            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions, $encode) {
+                unset($index);
+                $options = array_merge(
+                    [
+                        'class' => 'form-check-input',
+                        'label' => $encode ? static::encode($label) : $label,
+                        'labelOptions' => ['class' => 'form-check-label'],
+                        'value' => $value,
+                    ], $itemOptions);
 
-            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions, $wrapperOptions, $encode) {
-                $itemOptions['value'] = $value;
-                if (!isset($itemOptions['label'])) {
-                    $itemOptions['label'] = $encode ? static::encode($label) : $label;
-                }
-
-                return static::tag('div', static::radio($name, $checked, $itemOptions), $wrapperOptions);
+                return '<div class="form-check">' . static::radio($name, $checked, $options) . '</div>';
             };
         }
 
@@ -108,32 +102,23 @@ abstract class BaseHtml extends \yii\helpers\Html
 
     /**
      * {@inheritdoc}
-     * Pass `true` in `$options['inline']` to generate [inline list](https://getbootstrap.com/docs/5.1/forms/checks-radios/#inline).
      */
     public static function checkboxList($name, $selection = null, $items = [], $options = []): string
     {
-        $inline = ArrayHelper::remove($options, 'inline', false);
-
         if (!isset($options['item'])) {
             $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
-            static::addCssClass($itemOptions, 'form-check-input');
-            if (!isset($itemOptions['labelOptions'])) {
-                $itemOptions['labelOptions'] = ['class' => 'form-check-label'];
-            } else {
-                static::addCssClass($itemOptions['labelOptions'], 'form-check-label');
-            }
-
-            $wrapperOptions = $inline ? ['class' => 'form-check form-check-inline'] : ['class' => 'form-check'];
-
             $encode = ArrayHelper::getValue($options, 'encode', true);
+            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions, $encode) {
+                unset($index);
+                $options = array_merge(
+                    [
+                        'class' => 'form-check-input',
+                        'label' => $encode ? static::encode($label) : $label,
+                        'labelOptions' => ['class' => 'form-check-label'],
+                        'value' => $value,
+                    ], $itemOptions);
 
-            $options['item'] = function ($index, $label, $name, $checked, $value) use ($itemOptions, $wrapperOptions, $encode) {
-                $itemOptions['value'] = $value;
-                if (!isset($itemOptions['label'])) {
-                    $itemOptions['label'] = $encode ? static::encode($label) : $label;
-                }
-
-                return static::tag('div', static::checkbox($name, $checked, $itemOptions), $wrapperOptions);
+                return '<div class="form-check">' . Html::checkbox($name, $checked, $options) . '</div>';
             };
         }
 
@@ -153,7 +138,7 @@ abstract class BaseHtml extends \yii\helpers\Html
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected static function booleanInput($type, $name, $checked = false, $options = []): string
     {

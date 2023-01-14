@@ -209,14 +209,14 @@ class Toast extends Widget
             $this->closeButton = array_merge([
                 'class' => ['widget' => 'btn-close'],
                 'data' => ['bs-dismiss' => 'toast'],
-                'aria' => ['label' => Yii::t('yii/bootstrap5', 'Close')]
+                'aria' => ['label' => 'Close']
             ], $this->closeButton);
         }
 
         if (!isset($this->options['role'])) {
             $this->options['role'] = 'alert';
         }
-        if (!isset($this->options['aria']['live'])) {
+        if (!isset($this->options['aria']) && !isset($this->options['aria-live'])) {
             $this->options['aria'] = [
                 'live' => 'assertive',
                 'atomic' => 'true',

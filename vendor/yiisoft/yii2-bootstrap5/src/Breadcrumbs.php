@@ -9,106 +9,123 @@ declare(strict_types=1);
 
 namespace yii\bootstrap5;
 
+use RuntimeException;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * This widget represents a Bootstrap 5 component "Breadcrumb". It displays a list of links indicating the
- * position of the current page in the whole site hierarchy.
+ * Breadcrumbs represents a Bootstrap 5 version of [[\yii\widgets\Breadcrumbs]]. It displays
+ * a list of links indicating the position of the current page in the whole site hierarchy.
+ *
+ * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
  * ```php
  * echo Breadcrumbs::widget([
- *     'links' => [
- *         [
- *             'label' => 'the item label', // required
- *             'url' => 'the item URL', // optional, will be processed by `Url::to()`
- *             'template' => 'own template of the item', // optional
- *          ],
- *          ['label' => 'the label of the active item']
- *     ],
- *     'options' => [...],
+ *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+ *     'options' => [],
  * ]);
  * ```
- * or
- * ```php
- * echo Breadcrumbs::widget([
- *     'links' => [
- *         'the item URL' => 'the item label',
- *          0 => 'the label of the active item',
- *     ],
- *     'options' => [...],
- * ]);
- * ```
- *
  * @see https://getbootstrap.com/docs/5.1/components/breadcrumb/
  * @author Alexandr Kozhevnikov <onmotion1@gmail.com>
  * @author Simon Karlen <simi.albi@outlook.com>
  */
-class Breadcrumbs extends \yii\widgets\Breadcrumbs
+class Breadcrumbs extends Widget
 {
-    use BootstrapWidgetTrait;
-
     /**
-     * {@inheritDoc}
+     * @var string the name of the breadcrumb container tag.
      */
     public $tag = 'ol';
     /**
-     * @var array|false the first hyperlink in the breadcrumbs (called home link).
+     * @var bool whether to HTML-encode the link labels.
+     */
+    public $encodeLabels = true;
+    /**
+     * @var array the first hyperlink in the breadcrumbs (called home link).
      * Please refer to [[links]] on the format of the link.
      * If this property is not set, it will default to a link pointing to [[\yii\web\Application::homeUrl]]
      * with the label 'Home'. If this property is false, the home link will not be rendered.
      */
     public $homeLink = [];
     /**
-     * {@inheritDoc}
+     * @var array list of links to appear in the breadcrumbs. If this property is empty,
+     * the widget will not render anything. Each array element represents a single link in the breadcrumbs
+     * with the following structure:
+     *
+     * ```php
+     * [
+     *     'label' => 'label of the link',  // required
+     *     'url' => 'url of the link',      // optional, will be processed by Url::to()
+     *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
+     * ]
+     * ```
+     *
+     *
+     */
+    public $links = [];
+    /**
+     * @var string the template used to render each inactive item in the breadcrumbs. The token `{link}`
+     * will be replaced with the actual HTML link for each inactive item.
      */
     public $itemTemplate = "<li class=\"breadcrumb-item\">{link}</li>\n";
     /**
-     * {@inheritDoc}
+     * @var string the template used to render each active item in the breadcrumbs. The token `{link}`
+     * will be replaced with the actual HTML link for each active item.
      */
     public $activeItemTemplate = "<li class=\"breadcrumb-item active\" aria-current=\"page\">{link}</li>\n";
     /**
      * @var array the HTML attributes for the widgets nav container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $navOptions = ['aria' => ['label' => 'breadcrumb']];
+    public $navOptions = ['aria-label' => 'breadcrumb'];
+
+
+    /**
+     * Initializes the widget.
+     * If you override this method, make sure you call the parent implementation first.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->clientOptions = [];
+        Html::addCssClass($this->options, ['widget' => 'breadcrumb']);
+    }
 
     /**
      * {@inheritDoc}
      */
     public function run(): string
     {
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = "{$this->getId()}-breadcrumb";
+        }
+
+        /** @psalm-suppress InvalidArgument */
+        Html::addCssClass($this->options, ['widget' => 'breadcrumb']);
+
         if (empty($this->links)) {
             return '';
         }
 
-        // Normalize links
         $links = [];
-        foreach ($this->links as $key => $value) {
-            if (is_array($value)) {
-                $links[] = $value;
-            } else {
-                $links[] = ['label' => $value, 'url' => is_string($key) ? $key : null];
-            }
-        }
-        $this->links = $links;
-        unset($links);
 
         if ($this->homeLink === []) {
-            $this->homeLink = null;
+            $links[] = $this->renderItem([
+                'label' => 'Home',
+                'url' => '/',
+            ], $this->itemTemplate);
+        } else {
+            $links[] = $this->renderItem($this->homeLink, $this->itemTemplate);
         }
 
-        if (!isset($this->options['id'])) {
-            $this->options['id'] = "{$this->getId()}-breadcrumb";
+        foreach ($this->links as $link) {
+            if (!is_array($link)) {
+                $link = ['label' => $link];
+            }
+
+            $links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
         }
-        Html::addCssClass($this->options, ['widget' => 'breadcrumb']);
 
-        // parent method not return result
-        ob_start();
-        parent::run();
-        $content = ob_get_clean();
-
-        return Html::tag('nav', $content, $this->navOptions);
+        return Html::tag('nav', Html::tag($this->tag, implode('', $links), $this->options), $this->navOptions);
     }
 
     /**
@@ -148,11 +165,11 @@ class Breadcrumbs extends \yii\widgets\Breadcrumbs
      * If this property is not set, it will default to a link pointing with the label 'Home'. If this property is false,
      * the home link will not be rendered.
      *
-     * @param array|false $value
+     * @param array $value
      *
      * @return $this
      */
-    public function homeLink($value): self
+    public function homeLink(array $value): self
     {
         $this->homeLink = $value;
 
@@ -175,8 +192,16 @@ class Breadcrumbs extends \yii\widgets\Breadcrumbs
     }
 
     /**
-     * List of links to appear in the breadcrumbs. If this property is empty, the widget will not render anything.
-     * Each array element represents a single item in the breadcrumbs with the following structure.
+     * List of links to appear in the breadcrumbs. If this property is empty, the widget will not render anything. Each
+     * array element represents a single link in the breadcrumbs with the following structure:
+     *
+     * ```php
+     * [
+     *     'label' => 'label of the link',  // required
+     *     'url' => 'url of the link',      // optional, will be processed by Url::to()
+     *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
+     * ]
+     * ```
      *
      * @param array $value
      *
@@ -234,4 +259,41 @@ class Breadcrumbs extends \yii\widgets\Breadcrumbs
 
         return $this;
     }
+
+    /**
+     * Renders a single breadcrumb item.
+     *
+     * @param array $link the link to be rendered. It must contain the "label" element. The "url" element is optional.
+     * @param string $template the template to be used to rendered the link. The token "{link}" will be replaced by the
+     * link.
+     *
+     * @return string the rendering result
+     * @throws RuntimeException if `$link` does not have "label" element.
+     *
+     */
+    protected function renderItem(array $link, string $template): string
+    {
+        $encodeLabel = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
+
+        if (array_key_exists('label', $link)) {
+            $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
+        } else {
+            throw new RuntimeException('The "label" element is required for each link.');
+        }
+
+        if (isset($link['template'])) {
+            $template = $link['template'];
+        }
+
+        if (isset($link['url'])) {
+            $options = $link;
+            unset($options['template'], $options['label'], $options['url']);
+            $linkHtml = Html::a($label, $link['url'], $options);
+        } else {
+            $linkHtml = $label;
+        }
+
+        return strtr($template, ['{link}' => $linkHtml]);
+    }
+
 }

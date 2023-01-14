@@ -1,8 +1,8 @@
 <?php
 /**
- * @link https://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license https://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\db\mysql;
@@ -223,8 +223,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in MySQL
-            // https://stackoverflow.com/questions/255517/mysql-offset-infinite-rows/271650#271650
-            // https://dev.mysql.com/doc/refman/5.7/en/select.html#idm46193796386608
+            // http://stackoverflow.com/a/271650/1106908
+            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
             $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
         }
 
@@ -259,17 +259,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$columns instanceof Query && empty($names)) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
             if ($tableSchema !== null) {
-                if (!empty($tableSchema->primaryKey)) {
-                    $columns = $tableSchema->primaryKey;
-                    $defaultValue = 'NULL';
-                } else {
-                    $columns = [reset($tableSchema->columns)->name];
-                    $defaultValue = 'DEFAULT';
-                }
-                
+                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
-                    $placeholders[] = $defaultValue;
+                    $placeholders[] = 'DEFAULT';
                 }
             }
         }
@@ -364,7 +357,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * @param string $table table name
      * @param string $column column name
-     * @return string|null the column definition
+     * @return null|string the column definition
      * @throws Exception in case when table does not contain column
      */
     private function getColumnDefinition($table, $column)
