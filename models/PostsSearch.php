@@ -4,7 +4,7 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\posts;
+use app\models\Posts;
 
 
 class PostsSearch extends Posts

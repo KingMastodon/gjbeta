@@ -7,7 +7,7 @@ use app\models\PostsSearch;
 use app\models\Comments;
 use app\models\CommentsSearch;
 use yii\web\NotFoundHttpException;
-use yii\helpers\ArrayHelper;
+use app\components\NestedArrayHelper;
 
 class PostsController extends \yii\web\Controller
 {
@@ -77,7 +77,7 @@ class PostsController extends \yii\web\Controller
      */
     public function formatCommentModelsToJson(array $models)
     {
-        $dataJson = ArrayHelper::buildParentChildTreeArray($models);
+        $dataJson = NestedArrayHelper::buildParentChildTreeArray($models);
         $dataJson = array_map(fn ($model) => [
             'id' => $model->id,
             'parent_id' => $model->parent_id,

@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use yii\widgets\NestedCommentsListView;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
