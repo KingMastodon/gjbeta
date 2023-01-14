@@ -82,3 +82,14 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.comment-body{
+    
+    border: 1px solid gray;
+    padding-left: 1em;
+    
+}
+
+.p-deleted{
+    color:darkred;
+}
