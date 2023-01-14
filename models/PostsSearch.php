@@ -29,9 +29,7 @@ class PostsSearch extends Posts
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
-    */
-
-    
+    */    
     public function search($params)
     {
         $query = Posts::find();
